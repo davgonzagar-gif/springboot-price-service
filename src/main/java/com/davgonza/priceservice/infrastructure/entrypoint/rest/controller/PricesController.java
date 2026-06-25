@@ -1,14 +1,23 @@
 package com.davgonza.priceservice.infrastructure.entrypoint.rest.controller;
 
+import com.davgonza.priceservice.application.port.in.GetApplicablePriceUseCase;
+import com.davgonza.priceservice.domain.model.Price;
 import com.davgonza.priceservice.infrastructure.entrypoint.rest.api.PricesApi;
+import com.davgonza.priceservice.infrastructure.entrypoint.rest.mapper.ApplicablePriceMapper;
 import com.davgonza.priceservice.infrastructure.entrypoint.rest.model.ApplicablePrice;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.OffsetDateTime;
 
 @RestController
+@RequiredArgsConstructor
 public class PricesController implements PricesApi {
+
+    private final GetApplicablePriceUseCase getApplicablePriceUseCase;
+
+    private final ApplicablePriceMapper applicablePriceMapper;
 
     @Override
     public ResponseEntity<ApplicablePrice> findApplicablePrice(
@@ -16,14 +25,14 @@ public class PricesController implements PricesApi {
             Long productId,
             Long brandId) {
 
-        ApplicablePrice response = new ApplicablePrice();
+        Price price = getApplicablePriceUseCase.getApplicablePrice(
+                applicationDate.toLocalDateTime(),
+                productId,
+                brandId
+        );
 
-        response.setProductId(productId);
-        response.setBrandId(brandId);
-        response.setPriceList(1);
-        response.setPrice(35.50);
-        response.setCurrency("EUR");
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                applicablePriceMapper.toResponse(price)
+        );
     }
 }
