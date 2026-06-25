@@ -5,7 +5,6 @@ import com.davgonza.priceservice.infrastructure.entrypoint.rest.model.Applicable
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @RestController
